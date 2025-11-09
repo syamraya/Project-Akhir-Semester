@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { IncomesService } from './incomes.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { IncomeService } from './incomes.service';
 import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
 
-@Controller('incomes')
-export class IncomesController {
-  constructor(private readonly incomesService: IncomesService) {}
+@Controller('income')
+export class IncomeController {
+  constructor(private readonly incomeService: IncomeService) {}
 
   @Post()
   create(@Body() createIncomeDto: CreateIncomeDto) {
-    return this.incomesService.create(createIncomeDto);
+    return this.incomeService.create(createIncomeDto);
   }
 
   @Get()
   findAll() {
-    return this.incomesService.findAll();
+    return this.incomeService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.incomesService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.incomeService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIncomeDto: UpdateIncomeDto) {
-    return this.incomesService.update(+id, updateIncomeDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateIncomeDto: UpdateIncomeDto,
+  ) {
+    return this.incomeService.update(id, updateIncomeDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.incomesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.incomeService.remove(id);
   }
 }

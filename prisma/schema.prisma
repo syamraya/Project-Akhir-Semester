@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
@@ -15,34 +14,53 @@ datasource db {
 }
 
 enum UserRole {
- USER
- ADMIN
+  USER
+  ADMIN
 }
+
 model User {
-  id         Int           @id @default(autoincrement())
-  name       String
-  email      String        @unique
-  password   String        
-  role       String        @default("USER")
-  transactions Transaction[]
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  id          Int         @id @default(autoincrement())
+  name        String
+  email       String      @unique
+  password    String
+  role        UserRole    @default(USER)
+  expenses    Expense[]
+  incomes     Income[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model Category {
-  id            Int           @id @default(autoincrement())
-  name          String
-  transactions  Transaction[]
+  id          Int         @id @default(autoincrement())
+  name        String
+  expenses    Expense[]
+  incomes     Income[]
 }
 
-model Transaction {
-  id          Int       @id @default(autoincrement())
+model Expense {
+  id          Int         @id @default(autoincrement())
+  title       String
   amount      Float
-  type        String
+  date        DateTime    @default(now())
   description String?
-  date        DateTime   @default(now())
-  categoryId  Int
+  categoryId  Int?
+  category    Category?   @relation(fields: [categoryId], references: [id])
   userId      Int
-  category    Category   @relation(fields: [categoryId], references: [id])
-  user        User       @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Income {
+  id          Int         @id @default(autoincrement())
+  title       String
+  amount      Float
+  date        DateTime    @default(now())
+  description String?
+  categoryId  Int?
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
